@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT(libsoem, 1.4.0, stephan@synkhronix.com)
+AC_INIT(ethercat, 1.4.0, stephan@synkhronix.com)
 AC_CONFIG_SRCDIR([src/base.c])
 AC_CONFIG_HEADERS([config.h])
 
