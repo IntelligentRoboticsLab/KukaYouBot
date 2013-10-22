@@ -1,4 +1,5 @@
 lib_LTLIBRARIES = libsoem.la
+ACLOCAL_AMFLAGS = -I m4
 
 libsoem_la_CFLAGS = -I$(top_srcdir)/include
 libsoem_la_SOURCES = \
