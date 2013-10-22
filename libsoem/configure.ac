@@ -27,6 +27,7 @@ AC_CHECK_HEADERS([string.h])
 
 # Checks for library functions.
 AC_CHECK_FUNCS([memset])
+AC_CHECK_LIB([rt], [clock_gettime])
 
-AC_CONFIG_FILES([Makefile soem.pc])
+AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
