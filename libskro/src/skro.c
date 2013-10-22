@@ -18,3 +18,58 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <ethercatmain.h>
+#include <ethercatconfig.h>
+
+#include "skro.h"
+
+struct skro_ctx_t *skro_init(const char *if_name) {
+	struct skro_ctx_t *ctx;
+
+	/*
+	 * Create the context object that is used within libskro.
+	 */
+	ctx = calloc(sizeof(struct skro_ctx_t));
+
+	if (!ctx) {
+		goto cleanup0;
+	}
+
+	/*
+	 * Attempt to initiate libsoem, and bind a socket to the interface that
+	 * has been specified.
+	 */
+	if (ecx_init(&ctx->ec_ctx, if_name) < 0) {
+		goto cleanup1;
+	}
+
+	/*
+	 * Attempt to detect and configure all the slaves.
+	 */
+	ctx->slave_count = ecx_config_init(&ctx->ec_ctx, TRUE);
+
+	if (ctx->slave_count == 0) {
+		goto cleanup2;
+	}
+
+	ecx_config_map_group(&ctx->ec_ctx, &ctx->io_map, 0);
+
+	return ctx;
+
+cleanup2:
+	ecx_close(&ctx->ec_ctx);
+cleanup1:
+	free(ctx);
+cleanup0:
+	return NULL;
+}
+
+void skro_cleanup(struct skro_ctx_t *ctx) {
+	if (!ctx) {
+		return;
+	}
+
+	ecx_close(&ctx->ec_ctx);
+	free(ctx);
+}
+
