@@ -20,7 +20,7 @@ AC_CHECK_HEADERS([stdlib.h string.h])
 # Checks for typedefs, structures, and compiler characteristics.
 
 # Checks for library functions.
-AC_CHECK_LIB(libsoem, ecx_init)
+AC_CHECK_LIB([soem], [ecx_init])
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
