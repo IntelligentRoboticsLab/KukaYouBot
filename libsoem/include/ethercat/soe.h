@@ -43,8 +43,8 @@
  * Headerfile for ethercatsoe.c 
  */
 
-#ifndef _ethercatsoe_
-#define _ethercatsoe_
+#ifndef ETHERCAT_SOE_H
+#define ETHERCAT_SOE_H
 
 #ifdef __cplusplus
 extern "C"
@@ -162,4 +162,5 @@ int ecx_readIDNmap(ecx_contextt *context, uint16 slave, int *Osize, int *Isize);
 }
 #endif
 
-#endif
+#endif /* ETHERCAT_SOE_H */
+

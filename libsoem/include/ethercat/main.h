@@ -43,9 +43,8 @@
  * Headerfile for ethercatmain.c 
  */
 
-#ifndef _ethercatmain_
-#define _ethercatmain_
-
+#ifndef ETHERCAT_MAIN_H
+#define ETHERCAT_MAIN_H
 
 #ifdef __cplusplus
 extern "C"
@@ -549,4 +548,5 @@ int ecx_receive_processdata(ecx_contextt *context, int timeout);
 }
 #endif
 
-#endif
+#endif /* ETHERCAT_MAIN_H */
+

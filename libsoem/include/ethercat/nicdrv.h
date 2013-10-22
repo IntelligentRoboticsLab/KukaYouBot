@@ -43,8 +43,8 @@
  * Headerfile for nicdrv.c 
  */
 
-#ifndef _nicdrvh_
-#define _nicdrvh_
+#ifndef ETHERCAT_NICDRV_H
+#define ETHERCAT_NICDRV_H
 
 #ifdef __cplusplus
 extern "C"
@@ -152,4 +152,5 @@ int ecx_srconfirm(ecx_portt *port, int idx,int timeout);
 }
 #endif
 
-#endif
+#endif /* ETHERCAT_NICDRV_H */
+

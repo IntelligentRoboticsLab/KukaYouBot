@@ -50,8 +50,10 @@
  * timeouts need to be shorter.   
  */
 
-#ifndef _EC_TYPE_H
-#define _EC_TYPE_H
+#ifndef ETHERCAT_TYPE_H
+#define ETHERCAT_TYPE_H
+
+#include <ethercat/osal.h>
 
 #ifdef __cplusplus
 extern "C"
@@ -64,8 +66,6 @@ extern "C"
 /** define EC_VER1 if version 1 default context and functions are needed
  * comment if application uses only ecx_ functions and own context */
 #define EC_VER1
-
-#include <osal.h>
 
 /** return value general error */
 #define EC_ERROR           -3
@@ -582,4 +582,5 @@ typedef struct
 }
 #endif
 
-#endif /* _EC_TYPE_H */
+#endif /* ETHERCAT_TYPE_H */
+

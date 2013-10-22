@@ -20,6 +20,7 @@ pkginclude_HEADERS = \
 	include/config.h \
 	include/configlist.h \
 	include/dc.h \
+	include/ethercast.h \
 	include/foe.h \
 	include/main.h \
 	include/nicdrv.h \

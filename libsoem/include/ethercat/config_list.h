@@ -57,6 +57,10 @@
     6: input/output device no mailbox                    
     7: input.output device with mailbox configuration           
 */
+
+#ifndef ETHERCAT_CONFIG_LIST_H
+#define ETHERCAT_CONFIG_LIST_H
+
 #define EC_CONFIGEND 0xffffffff
 
 ec_configlist_t ec_configlist[] = {
@@ -85,3 +89,6 @@ ec_configlist_t ec_configlist[] = {
       {/*Man=*/0x00000002,/*ID=*/0x13ed3052,/*Name=*/"EL5101"    ,/*dtype=*/7,/*Ibits=*/40,/*Obits=*/24,/*SM2a*/0x1000,/*SM2f*/0x00010024,/*SM3a*/0x1100,/*SM3f*/0x00010020,/*FM0ac*/1,/*FM1ac*/1},
       {/*Man=*/EC_CONFIGEND,/*ID=*/0x00000000,/*Name=*/""        ,/*dtype=*/0,/*Ibits=*/ 0,/*Obits=*/ 0,/*SM2a*/     0,/*SM2f*/         0,/*SM3a*/     0,/*SM3f*/         0,/*FM0ac*/0,/*FM1ac*/0}
 };
+
+#endif /* ETHERCAT_CONFIG_LIST_H */
+

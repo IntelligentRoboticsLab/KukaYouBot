@@ -43,12 +43,13 @@
  * Distributed Clock EtherCAT functions. 
  *
  */
-#include "oshw.h"
-#include "osal.h"
-#include "ethercattype.h"
-#include "ethercatbase.h"
-#include "ethercatmain.h"
-#include "ethercatdc.h"
+
+#include <ethercat/osal.h>
+#include <ethercat/oshw.h>
+#include <ethercat/type.h>
+#include <ethercat/base.h>
+#include <ethercat/main.h>
+#include <ethercat/dc.h>
 
 #define PORTM0 0x01
 #define PORTM1 0x02

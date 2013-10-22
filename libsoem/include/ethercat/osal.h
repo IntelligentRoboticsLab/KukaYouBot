@@ -18,8 +18,8 @@
  *------------------------------------------------------------------------------
  */
 
-#ifndef _osal_
-#define _osal_
+#ifndef ETHERCAT_OSAL_H
+#define ETHERCAT_OSAL_H
 
 #include <stdint.h>
 
@@ -66,4 +66,5 @@ boolean osal_timer_is_expired (const osal_timert * self);
 int osal_usleep (uint32 usec);
 ec_timet osal_current_time (void);
 
-#endif
+#endif /* ETHERCAT_OSAL_H */
+

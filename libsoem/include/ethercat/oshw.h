@@ -23,16 +23,17 @@
  * Headerfile for ethercatbase.c 
  */
 
-#ifndef _oshw_
-#define _oshw_
+#ifndef ETHERCAT_OSHW_H
+#define ETHERCAT_OSHW_H
 
-#include "ethercattype.h"
-#include "nicdrv.h"
-#include "ethercatmain.h"
+#include <ethercat/type.h>
+#include <ethercat/nicdrv.h>
+#include <ethercat/main.h>
 
 uint16 oshw_htons(uint16 hostshort);
 uint16 oshw_ntohs(uint16 networkshort);
 ec_adaptert * oshw_find_adapters(void);
 void oshw_free_adapters(ec_adaptert * adapter);
 
-#endif
+#endif /* ETHERCAT_OSHW_H */
+

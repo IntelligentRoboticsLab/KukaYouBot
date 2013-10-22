@@ -43,8 +43,8 @@
  * Headerfile for ethercatdc.c 
  */
 
-#ifndef _EC_ECATDC_H
-#define _EC_ECATDC_H
+#ifndef ETHERCAT_DC_H
+#define ETHERCAT_DC_H
 
 #ifdef __cplusplus
 extern "C"
@@ -65,4 +65,5 @@ void ecx_dcsync01(ecx_contextt *context, uint16 slave, boolean act, uint32 CyclT
 }
 #endif
 
-#endif /* _EC_ECATDC_H */
+#endif /* ETHERCAT_DC_H */
+

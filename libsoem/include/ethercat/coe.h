@@ -43,8 +43,8 @@
  * Headerfile for ethercatcoe.c 
  */
 
-#ifndef _ethercatcoe_
-#define _ethercatcoe_
+#ifndef ETHERCAT_COE_H
+#define ETHERCAT_COE_H
 
 #ifdef __cplusplus
 extern "C"
@@ -127,4 +127,5 @@ int ecx_readOE(ecx_contextt *context, uint16 Item, ec_ODlistt *pODlist, ec_OElis
 }
 #endif
 
-#endif
+#endif /* ETHERCAT_COE_H */
+

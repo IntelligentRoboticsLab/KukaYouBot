@@ -43,8 +43,8 @@
  * Headerfile for ethercatbase.c 
  */
 
-#ifndef _ethercatbase_
-#define _ethercatbase_
+#ifndef ETHERCAT_BASE_H
+#define ETHERCAT_BASE_H
 
 #ifdef __cplusplus
 extern "C"
@@ -95,4 +95,5 @@ int ec_LRWDC(uint32 LogAdr, uint16 length, void *data, uint16 DCrs, int64 *DCtim
 }
 #endif
 
-#endif
+#endif /* ETHERCAT_BASE_H */
+

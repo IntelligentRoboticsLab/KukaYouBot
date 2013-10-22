@@ -43,8 +43,8 @@
  * Headerfile for ethercatprint.c 
  */
 
-#ifndef _ethercatprint_
-#define _ethercatprint_
+#ifndef ETHERCAT_PRINT_H
+#define ETHERCAT_PRINT_H
 
 #ifdef __cplusplus
 extern "C"
@@ -64,4 +64,5 @@ char* ec_elist2string(void);
 }
 #endif
 
-#endif
+#endif /* ETHERCAT_PRINT_H */
+

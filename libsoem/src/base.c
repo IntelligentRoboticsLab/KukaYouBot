@@ -51,11 +51,11 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "oshw.h"
-#include "osal.h"
-#include "ethercattype.h"
-#include "ethercatbase.h"
 
+#include <ethercat/oshw.h>
+#include <ethercat/osal.h>
+#include <ethercat/type.h>
+#include <ethercat/base.h>
 
 /** Generate and set EtherCAT datagram in a standard ethernet frame.
  *

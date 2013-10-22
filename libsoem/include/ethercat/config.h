@@ -43,8 +43,8 @@
  * Headerfile for ethercatconfig.c 
  */
 
-#ifndef _ethercatconfig_
-#define _ethercatconfig_
+#ifndef ETHERCAT_CONFIG_H
+#define ETHERCAT_CONFIG_H
 
 #ifdef __cplusplus
 extern "C"
@@ -72,4 +72,5 @@ int ecx_reconfig_slave(ecx_contextt *context, uint16 slave, int timeout);
 }
 #endif
 
-#endif
+#endif /* ETHERCAT_CONFIG_H */
+

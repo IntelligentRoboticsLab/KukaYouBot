@@ -43,8 +43,8 @@
  * Headerfile for ethercatfoe.c 
  */
 
-#ifndef _ethercatfoe_
-#define _ethercatfoe_
+#ifndef ETHERCAT_FOE_H
+#define ETHERCAT_FOE_H
 
 #ifdef __cplusplus
 extern "C"
@@ -65,4 +65,5 @@ int ecx_FOEwrite(ecx_contextt *context, uint16 slave, char *filename, uint32 pas
 }
 #endif
 
-#endif
+#endif /* ETHERCAT_FOE_H */
+

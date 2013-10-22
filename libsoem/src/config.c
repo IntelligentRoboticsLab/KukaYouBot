@@ -48,14 +48,15 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "osal.h"
-#include "oshw.h"
-#include "ethercattype.h"
-#include "ethercatbase.h"
-#include "ethercatmain.h"
-#include "ethercatcoe.h"
-#include "ethercatsoe.h"
-#include "ethercatconfig.h"
+
+#include <ethercat/osal.h>
+#include <ethercat/oshw.h>
+#include <ethercat/type.h>
+#include <ethercat/base.h>
+#include <ethercat/main.h>
+#include <ethercat/coe.h>
+#include <ethercat/soe.h>
+#include <ethercat/config.h>
 
 // define if debug printf is needed
 //#define EC_DEBUG
@@ -96,7 +97,7 @@ typedef const struct
    uint8            FM1ac;
 } ec_configlist_t;
 
-#include "ethercatconfiglist.h"
+#include <ethercat/config_list.h>
 #endif
 
 /** standard SM0 flags configuration for mailbox slaves */
