@@ -18,18 +18,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <ethercatmain.h>
-#include <ethercatconfig.h>
+#include <ethercat/ethercat.h>
 
 #include "skro.h"
 
-struct skro_ctx_t *skro_init(const char *if_name) {
+struct skro_ctx_t *skro_init(char *if_name) {
 	struct skro_ctx_t *ctx;
 
 	/*
 	 * Create the context object that is used within libskro.
 	 */
-	ctx = calloc(sizeof(struct skro_ctx_t));
+	ctx = calloc(1, sizeof(struct skro_ctx_t));
 
 	if (!ctx) {
 		goto cleanup0;

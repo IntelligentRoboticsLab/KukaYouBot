@@ -5,16 +5,10 @@ AC_PREREQ([2.69])
 AC_INIT(libskro, 0.1.0, stephan@synkhronix.com)
 AC_CONFIG_SRCDIR([src/skro.c])
 AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_MACRO_DIR([m4])
 
 # Checks for programs.
-AC_PROG_CXX
-AC_PROG_AWK
 AC_PROG_CC
-AC_PROG_CPP
-AC_PROG_INSTALL
-AC_PROG_LN_S
-AC_PROG_MAKE_SET
-AC_PROG_RANLIB
 LT_INIT
 AM_INIT_AUTOMAKE([1.9 foreign])
 
@@ -26,6 +20,7 @@ AC_CHECK_HEADERS([stdlib.h string.h])
 # Checks for typedefs, structures, and compiler characteristics.
 
 # Checks for library functions.
+AC_CHECK_LIB(libsoem, ecx_init)
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
