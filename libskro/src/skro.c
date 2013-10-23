@@ -19,18 +19,11 @@
 
 #include <ethercat/ethercat.h>
 
-#include "skro.h"
+#include <skro/skro.h>
 
-struct skro_ctx_t *skro_init(char *if_name) {
-	struct skro_ctx_t *ctx;
-
-	/*
-	 * Create the context object that is used within libskro.
-	 */
-	ctx = calloc(1, sizeof(struct skro_ctx_t));
-
+int skro_init(struct skro_ctx_t *ctx, char *if_name) {
 	if (!ctx) {
-		goto cleanup0;
+		return SKRO_ERR_INVAL;
 	}
 
 	/*
@@ -38,7 +31,7 @@ struct skro_ctx_t *skro_init(char *if_name) {
 	 * has been specified.
 	 */
 	if (ecx_init(&ctx->ec_ctx, if_name) < 0) {
-		goto cleanup1;
+		return SKRO_ERR_NO_CONN;
 	}
 
 	/*
@@ -47,19 +40,45 @@ struct skro_ctx_t *skro_init(char *if_name) {
 	ctx->slave_count = ecx_config_init(&ctx->ec_ctx, TRUE);
 
 	if (ctx->slave_count == 0) {
-		goto cleanup2;
+		ecx_close(&ctx->ec_ctx);
+
+		return SKRO_ERR_NO_SLAVES;
 	}
 
 	ecx_config_map_group(&ctx->ec_ctx, &ctx->io_map, 0);
 
-	return ctx;
+	/*
+	 * Wait for all slaves to reach SAFE_OP state.
+	 */
+	ecx_statecheck(&ctx->ec_ctx, 0, EC_STATE_SAFE_OP, EC_TIMEOUTSTATE);
 
-cleanup2:
-	ecx_close(&ctx->ec_ctx);
-cleanup1:
-	free(ctx);
-cleanup0:
-	return NULL;
+	if (ctx->ec_ctx.slavelist[0].state != EC_STATE_SAFE_OP) {
+		/*
+		 * TODO: check which slaves haven't reached SAFE_OP state.
+		 */
+	}
+
+	/* 
+	 * Request all slaves to reach OP state.
+	 */
+	ctx->ec_ctx.slavelist[0].state = EC_STATE_OPERATIONAL;
+
+	ecx_send_processdata(&ctx->ec_ctx);
+	ecx_receive_processdata(&ctx->ec_ctx, EC_TIMEOUTRET);
+	ec_writestate(0);
+
+	/*
+	 * Wait for all slaves to reach OP state.
+	 */
+	ecx_statecheck(&ctx->ec_ctx, 0, EC_STATE_OPERATIONAL, EC_TIMEOUTSTATE);
+
+	if (ec_slave[0].state != EC_STATE_OPERATIONAL) {
+		ecx_close(&ctx->ec_ctx);
+
+		return SKRO_ERR_NOT_READY;
+	}
+
+	return SKRO_ERR_OK;
 }
 
 void skro_cleanup(struct skro_ctx_t *ctx) {

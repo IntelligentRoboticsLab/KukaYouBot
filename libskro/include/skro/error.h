@@ -1,0 +1,12 @@
+#ifndef SKRO_ERROR_H
+
+enum skro_err_t {
+	SKRO_ERR_OK = 0,
+	SKRO_ERR_INVAL,
+	SKRO_ERR_NO_CONN,
+	SKRO_ERR_NO_SLAVES,
+	SKRO_ERR_NOT_READY,
+};
+
+#endif /* SKRO_ERROR_H */
+
