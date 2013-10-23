@@ -401,19 +401,3 @@ int ecx_readIDNmap(ecx_contextt *context, uint16 slave, int *Osize, int *Isize)
    return retVal;
 }
 
-#ifdef EC_VER1
-int ec_SoEread(uint16 slave, uint8 driveNo, uint8 elementflags, uint16 idn, int *psize, void *p, int timeout)
-{
-   return ecx_SoEread(&ecx_context, slave, driveNo, elementflags, idn, psize, p, timeout);
-}
-
-int ec_SoEwrite(uint16 slave, uint8 driveNo, uint8 elementflags, uint16 idn, int psize, void *p, int timeout)
-{
-   return ecx_SoEwrite(&ecx_context, slave, driveNo, elementflags, idn, psize, p, timeout);
-}
-
-int ec_readIDNmap(uint16 slave, int *Osize, int *Isize)
-{
-   return ecx_readIDNmap(&ecx_context, slave, Osize, Isize);
-}
-#endif

@@ -124,20 +124,6 @@ typedef struct
 extern const uint16 priMAC[3];
 extern const uint16 secMAC[3];
 
-#ifdef EC_VER1
-extern ecx_portt     ecx_port;
-extern ecx_redportt  ecx_redport;
-
-int ec_setupnic(const char * ifname, int secondary);
-int ec_closenic(void);
-void ec_setbufstat(int idx, int bufstat);
-int ec_getindex(void);
-int ec_outframe(int idx, int sock);
-int ec_outframe_red(int idx);
-int ec_waitinframe(int idx, int timeout);
-int ec_srconfirm(int idx,int timeout);
-#endif
-
 void ec_setupheader(void *p);
 int ecx_setupnic(ecx_portt *port, const char * ifname, int secondary);
 int ecx_closenic(ecx_portt *port);

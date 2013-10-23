@@ -91,7 +91,6 @@ enum
    ECT_RED_DOUBLE
 };
 
-
 /** Primary source MAC address used for EtherCAT.
  * This address is not the MAC address used from the NIC.
  * EtherCAT does not care about MAC addressing, but it is used here to
@@ -621,49 +620,3 @@ int ecx_srconfirm(ecx_portt *port, int idx, int timeout)
    return wkc;
 }
 
-#ifdef EC_VER1
-int ec_setupnic(const char *ifname, int secondary)
-{
-   return ecx_setupnic(&ecx_port, ifname, secondary);
-}
-
-int ec_closenic(void)
-{
-   return ecx_closenic(&ecx_port);
-}
-
-int ec_getindex(void)
-{
-   return ecx_getindex(&ecx_port);
-}
-
-void ec_setbufstat(int idx, int bufstat)
-{
-   ecx_setbufstat(&ecx_port, idx, bufstat);
-}
-
-int ec_outframe(int idx, int stacknumber)
-{
-   return ecx_outframe(&ecx_port, idx, stacknumber);
-}
-
-int ec_outframe_red(int idx)
-{
-   return ecx_outframe_red(&ecx_port, idx);
-}
-
-int ec_inframe(int idx, int stacknumber)
-{
-   return ecx_inframe(&ecx_port, idx, stacknumber);
-}
-
-int ec_waitinframe(int idx, int timeout)
-{
-   return ecx_waitinframe(&ecx_port, idx, timeout);
-}
-
-int ec_srconfirm(int idx, int timeout)
-{
-   return ecx_srconfirm(&ecx_port, idx, timeout);
-}
-#endif

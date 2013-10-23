@@ -67,69 +67,12 @@
 #define EC_PRINT(...) do {} while (0)
 #endif
 
-#ifdef EC_VER1
-/** Slave configuration structure */
-typedef const struct
-{
-   /** Manufacturer code of slave */
-   uint32           man;
-   /** ID of slave */
-   uint32           id;
-   /** Readable name */
-   char             name[EC_MAXNAME + 1];
-   /** Data type */
-   uint8            Dtype;
-   /** Input bits */
-   uint16            Ibits;
-   /** Output bits */
-   uint16           Obits;
-   /** SyncManager 2 address */
-   uint16           SM2a;
-   /** SyncManager 2 flags */
-   uint32           SM2f;
-   /** SyncManager 3 address */
-   uint16           SM3a;
-   /** SyncManager 3 flags */
-   uint32           SM3f;
-   /** FMMU 0 activation */
-   uint8            FM0ac;
-   /** FMMU 1 activation */
-   uint8            FM1ac;
-} ec_configlist_t;
-
-#include <ethercat/config_list.h>
-#endif
-
 /** standard SM0 flags configuration for mailbox slaves */
 #define EC_DEFAULTMBXSM0  0x00010026
 /** standard SM1 flags configuration for mailbox slaves */
 #define EC_DEFAULTMBXSM1  0x00010022
 /** standard SM0 flags configuration for digital output slaves */
 #define EC_DEFAULTDOSM0   0x00010044
-
-#ifdef EC_VER1
-/** Find slave in standard configuration list ec_configlist[]
- *
- * @param[in] man      = manufacturer
- * @param[in] id       = ID
- * @return index in ec_configlist[] when found, otherwise 0
- */
-int ec_findconfig( uint32 man, uint32 id)
-{
-   int i = 0;
-
-   do 
-   {
-      i++;
-   } while ( (ec_configlist[i].man != EC_CONFIGEND) && 
-           ((ec_configlist[i].man != man) || (ec_configlist[i].id != id)) );
-   if (ec_configlist[i].man == EC_CONFIGEND)
-   {
-      i = 0;
-   }
-   return i;
-}
-#endif
 
 /** Enumerate and init all slaves.
  *
@@ -360,70 +303,6 @@ int ecx_config_init(ecx_contextt *context, uint8 usetable)
                ecx_readeeprom(context, slave, ECT_SII_MBXPROTO, EC_TIMEOUTEEP);
          }   
          cindex = 0;
-         #ifdef EC_VER1
-         /* use configuration table ? */
-         if (usetable)
-         {
-            cindex = ec_findconfig( context->slavelist[slave].eep_man, context->slavelist[slave].eep_id );
-            context->slavelist[slave].configindex= cindex;
-         }
-         /* slave found in configuration table ? */
-         if (cindex)
-         {
-            context->slavelist[slave].Dtype = ec_configlist[cindex].Dtype;            
-            strcpy(context->slavelist[slave].name ,ec_configlist[cindex].name);
-            context->slavelist[slave].Ibits = ec_configlist[cindex].Ibits;
-            context->slavelist[slave].Obits = ec_configlist[cindex].Obits;
-            if (context->slavelist[slave].Obits)
-            {
-               context->slavelist[slave].FMMU0func = 1;
-            }
-            if (context->slavelist[slave].Ibits)
-            {
-               context->slavelist[slave].FMMU1func = 2;
-            }
-            context->slavelist[slave].FMMU[0].FMMUactive = ec_configlist[cindex].FM0ac;
-            context->slavelist[slave].FMMU[1].FMMUactive = ec_configlist[cindex].FM1ac;
-            context->slavelist[slave].SM[2].StartAddr = htoes(ec_configlist[cindex].SM2a);
-            context->slavelist[slave].SM[2].SMflags = htoel(ec_configlist[cindex].SM2f);
-            /* simple (no mailbox) output slave found ? */
-            if (context->slavelist[slave].Obits && !context->slavelist[slave].SM[2].StartAddr)
-            {
-               context->slavelist[slave].SM[0].StartAddr = htoes(0x0f00);
-               context->slavelist[slave].SM[0].SMlength = htoes((context->slavelist[slave].Obits + 7) / 8);
-               context->slavelist[slave].SM[0].SMflags = htoel(EC_DEFAULTDOSM0);         
-               context->slavelist[slave].FMMU[0].FMMUactive = 1;
-               context->slavelist[slave].FMMU[0].FMMUtype = 2;
-               context->slavelist[slave].SMtype[0] = 3;
-            }
-            /* complex output slave */
-            else
-            {
-               context->slavelist[slave].SM[2].SMlength = htoes((context->slavelist[slave].Obits + 7) / 8);
-               context->slavelist[slave].SMtype[2] = 3;
-            }   
-            context->slavelist[slave].SM[3].StartAddr = htoes(ec_configlist[cindex].SM3a);
-            context->slavelist[slave].SM[3].SMflags = htoel(ec_configlist[cindex].SM3f);
-            /* simple (no mailbox) input slave found ? */
-            if (context->slavelist[slave].Ibits && !context->slavelist[slave].SM[3].StartAddr)
-            {
-               context->slavelist[slave].SM[1].StartAddr = htoes(0x1000);
-               context->slavelist[slave].SM[1].SMlength = htoes((context->slavelist[slave].Ibits + 7) / 8);
-               context->slavelist[slave].SM[1].SMflags = htoel(0x00000000);         
-               context->slavelist[slave].FMMU[1].FMMUactive = 1;
-               context->slavelist[slave].FMMU[1].FMMUtype = 1;
-               context->slavelist[slave].SMtype[1] = 4;
-            }
-            /* complex input slave */
-            else
-            {
-               context->slavelist[slave].SM[3].SMlength = htoes((context->slavelist[slave].Ibits + 7) / 8);
-               context->slavelist[slave].SMtype[3] = 4;
-            }   
-         }
-         /* slave not in configuration table, find out via SII */
-         else
-         #endif
          {
             ssigen = ecx_siifind(context, slave, ECT_SII_GENERAL);
             /* SII general section */
@@ -1125,51 +1004,3 @@ int ecx_reconfig_slave(ecx_contextt *context, uint16 slave, int timeout)
    return state;      
 }
 
-#ifdef EC_VER1
-int ec_config_init(uint8 usetable)
-{
-   return ecx_config_init(&ecx_context, usetable);
-}
-
-int ec_config_map_group(void *pIOmap, uint8 group)
-{
-   return ecx_config_map_group(&ecx_context, pIOmap, group);
-}
-
-/** Map all PDOs from slaves to IOmap.
- *
- * @param[out] pIOmap     = pointer to IOmap   
- * @return IOmap size
- */
-int ec_config_map(void *pIOmap)
-{
-   return ec_config_map_group(pIOmap, 0);
-}
-
-/** Enumerate / map and init all slaves.
- *
- * @param[in] usetable    = TRUE when using configtable to init slaves, FALSE otherwise
- * @param[out] pIOmap     = pointer to IOmap   
- * @return Workcounter of slave discover datagram = number of slaves found
- */
-int ec_config(uint8 usetable, void *pIOmap)
-{
-   int wkc;
-   wkc = ec_config_init(usetable);
-   if (wkc)
-   {   
-      ec_config_map(pIOmap);
-   }
-   return wkc;
-}
-
-int ec_recover_slave(uint16 slave, int timeout)
-{
-   return ecx_recover_slave(&ecx_context, slave, timeout);
-}
-
-int ec_reconfig_slave(uint16 slave, int timeout)
-{
-   return ecx_reconfig_slave(&ecx_context, slave, timeout);
-}
-#endif

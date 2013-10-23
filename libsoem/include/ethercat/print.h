@@ -56,10 +56,6 @@ char* ec_ALstatuscode2string( uint16 ALstatuscode);
 char* ec_soeerror2string( uint16 errorcode);
 char* ecx_elist2string(ecx_contextt *context);
 
-#ifdef EC_VER1
-char* ec_elist2string(void);
-#endif
-
 #ifdef __cplusplus
 }
 #endif

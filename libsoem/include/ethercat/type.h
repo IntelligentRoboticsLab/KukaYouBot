@@ -63,10 +63,6 @@ extern "C"
 /** Define Little or Big endian target */
 #define EC_LITTLE_ENDIAN
 
-/** define EC_VER1 if version 1 default context and functions are needed
- * comment if application uses only ecx_ functions and own context */
-#define EC_VER1
-
 /** return value general error */
 #define EC_ERROR           -3
 /** return value no frame returned */
