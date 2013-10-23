@@ -24,5 +24,5 @@ skeletal representation (i.e. through the use of joints and such). The library
 mostly acts as a replacement for the youbot-driver.
 
 The following specifications are useful when developing libskro:
- - http://www.technohands.co.jp/products/pdf/TMCL\_reference.pdf
+ - http://www.technohands.co.jp/products/pdf/TMCL_reference.pdf
 
