@@ -17,9 +17,22 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <endian.h>
+
 #include <ethercat/ethercat.h>
 
 #include <skro/skro.h>
+
+#define SKRO_READ_BUF(in_ptr, type, value) \
+	do { \
+		(value) = *((type *)(in_ptr)); \
+		in_ptr += sizeof(type); \
+	} while (0)
+#define SKRO_WRITE_BUF(out_ptr, type, value) \
+	do { \
+		*((type *)(out_ptr)) = (value); \
+		(out_ptr) += sizeof(type); \
+	} while (0)
 
 int skro_init(struct skro_ctx_t *ctx, char *if_name) {
 	if (!ctx) {
@@ -27,8 +40,7 @@ int skro_init(struct skro_ctx_t *ctx, char *if_name) {
 	}
 
 	/*
-	 * Attempt to initiate libsoem, and bind a socket to the interface that
-	 * has been specified.
+	 * Attempt to establish an EtherCAT connection.
 	 */
 	if (ecx_init(&ctx->ec_ctx, if_name) < 0) {
 		return SKRO_ERR_NO_CONN;
@@ -86,7 +98,62 @@ void skro_cleanup(struct skro_ctx_t *ctx) {
 		return;
 	}
 
+	/*
+	 * Request all slaves to reach SAFE_OP state.
+	 */
+	ctx->ec_ctx.slavelist[0].state = EC_STATE_SAFE_OP;
+
+	ecx_writestate(&ctx->ec_ctx, 0);
+
+	/*
+	 * Close the EtherCAT connection.
+	 */
 	ecx_close(&ctx->ec_ctx);
 	free(ctx);
+}
+
+int recv_mbx_msg(struct skro_ctx_t *ctx, int slave_id, struct skro_mbx_in_msg_t *in_msg, int timeout) {
+	char *in_ptr;
+
+	if (!ctx || slave_id >= ctx->slave_count || !in_msg) {
+		return SKRO_ERR_INVAL;
+	}
+
+	if (ecx_mbxreceive(&ctx->ec_ctx, slave_id, &ctx->mbx_in_buf, timeout) == 0) {
+		return SKRO_ERR_TIMED_OUT;
+	}
+
+	in_ptr = (char *)ctx->mbx_in_buf;
+
+	SKRO_READ_BUF(in_ptr, uint8_t, in_msg->reply_addr);
+	SKRO_READ_BUF(in_ptr, uint8_t, in_msg->mod_addr);
+	SKRO_READ_BUF(in_ptr, uint8_t, in_msg->status);
+	SKRO_READ_BUF(in_ptr, uint8_t, in_msg->cmd_id);
+	SKRO_READ_BUF(in_ptr, uint32_t, in_msg->value);
+	in_msg->value = be32toh(in_msg->value);
+
+	return SKRO_ERR_OK;
+}
+
+int send_mbx_msg(struct skro_ctx_t *ctx, int slave_id, struct skro_mbx_out_msg_t *out_msg, int timeout) {
+	unsigned char *out_ptr;
+
+	if (!ctx || slave_id >= ctx->slave_count || !out_msg) {
+		return SKRO_ERR_INVAL;
+	}
+
+	out_ptr = (unsigned char *)ctx->mbx_out_buf;
+
+	SKRO_WRITE_BUF(out_ptr, uint8_t, out_msg->mod_addr);
+	SKRO_WRITE_BUF(out_ptr, uint8_t, out_msg->cmd_id);
+	SKRO_WRITE_BUF(out_ptr, uint8_t, out_msg->type_id);
+	SKRO_WRITE_BUF(out_ptr, uint8_t, out_msg->motor_id);
+	SKRO_WRITE_BUF(out_ptr, uint32_t, htobe32(out_msg->value));
+
+	if (ecx_mbxsend(&ctx->ec_ctx, slave_id, &ctx->mbx_out_buf, timeout) == 0) {
+		return SKRO_ERR_UNKNOWN;
+	}
+
+	return SKRO_ERR_OK;
 }
 
