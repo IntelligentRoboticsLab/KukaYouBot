@@ -1,0 +1,128 @@
+#include <stdlib.h>
+#include <string.h>
+
+#include <endian.h>
+
+#include <tmcl/tmcl.h>
+
+#define TMCL_ENC_BUF(out_ptr, type, value) \
+	do { \
+		*((type *)(out_ptr)) = (value); \
+		(out_ptr) += sizeof(type); \
+	} while (0)
+#define TMCL_DEC_BUF(in_ptr, type, value) \
+	do { \
+		(value) = *((type *)(in_ptr)); \
+		(in_ptr) += sizeof(type); \
+	} while (0)
+
+unsigned int tmcl_chksum(char *buf, size_t size) {
+	unsigned int res = 0;
+	size_t i;
+
+	for (i = 0; i < size; ++i) {
+		res += *buf++;
+	}
+
+	return res;
+}
+
+int tmcl_enc_cmd(tmcl_ctx_t *ctx, char *buf, size_t size, tmcl_cmd_t *cmd) {
+	char *out_ptr = buf;
+
+	if (!ctx || !buf || !cmd || size < ctx->req_cmd_size) {
+		return 0;
+	}
+
+	if (ctx->flags & TMCL_HAS_ADDR) {
+		TMCL_ENC_BUF(out_ptr, uint8_t, cmd->mod_addr);
+	}
+
+	TMCL_ENC_BUF(out_ptr, uint8_t, cmd->cmd_id);
+	TMCL_ENC_BUF(out_ptr, uint8_t, cmd->type_id);
+	TMCL_ENC_BUF(out_ptr, uint8_t, cmd->motor_id);
+	TMCL_ENC_BUF(out_ptr, uint32_t, htobe32(cmd->value));
+
+	if (ctx->flags & TMCL_HAS_CHKSUM) {
+		cmd->chksum = tmcl_chksum(buf, out_ptr - buf);
+		TMCL_ENC_BUF(out_ptr, uint8_t, cmd->chksum);
+	}
+
+	return (out_ptr - buf);
+}
+
+int tmcl_dec_cmd(tmcl_ctx_t *ctx, tmcl_cmd_t *cmd, char *buf, size_t size) {
+	char *in_ptr = buf;
+
+	if (!ctx || !buf || !cmd || size < ctx->req_cmd_size) {
+		return 0;
+	}
+
+	if (ctx->flags & TMCL_HAS_ADDR) {
+		TMCL_DEC_BUF(in_ptr, uint8_t, cmd->mod_addr);
+	}
+
+	TMCL_DEC_BUF(in_ptr, uint8_t, cmd->cmd_id);
+	TMCL_DEC_BUF(in_ptr, uint8_t, cmd->type_id);
+	TMCL_DEC_BUF(in_ptr, uint8_t, cmd->motor_id);
+	TMCL_DEC_BUF(in_ptr, uint32_t, cmd->value);
+	cmd->value = be32toh(cmd->value);
+
+	if (ctx->flags & TMCL_HAS_CHKSUM) {
+		TMCL_DEC_BUF(in_ptr, uint8_t, cmd->chksum);
+	}
+
+	return (in_ptr - buf);
+}
+
+int tmcl_enc_cmd_reply(tmcl_ctx_t *ctx, char *buf, size_t size, tmcl_cmd_reply_t *reply) {
+	char *out_ptr = buf;
+
+	if (!ctx || !buf || !reply || size < ctx->req_reply_size) {
+		return 0;
+	}
+
+	if (ctx->flags & TMCL_HAS_ADDR) {
+		TMCL_ENC_BUF(out_ptr, uint8_t, reply->reply_addr);
+	}
+
+	TMCL_ENC_BUF(out_ptr, uint8_t, reply->mod_addr);
+	TMCL_ENC_BUF(out_ptr, uint8_t, reply->cmd_id);
+	TMCL_ENC_BUF(out_ptr, uint8_t, reply->type_id);
+	TMCL_ENC_BUF(out_ptr, uint8_t, reply->motor_id);
+	TMCL_ENC_BUF(out_ptr, uint32_t, htobe32(reply->value));
+
+	if (ctx->flags & TMCL_HAS_CHKSUM) {
+		reply->chksum = tmcl_chksum(buf, out_ptr - buf);
+		TMCL_ENC_BUF(out_ptr, uint8_t, reply->chksum);
+	}
+
+	return (out_ptr - buf);
+}
+
+int tmcl_dec_cmd_reply(tmcl_ctx_t *ctx, tmcl_cmd_reply_t *reply, char *buf, size_t size) {
+	char *in_ptr = buf;
+
+	if (!ctx || !buf || !reply || size < ctx->req_reply_size) {
+		return 0;
+	}
+
+	if (ctx->flags & TMCL_HAS_ADDR) {
+		TMCL_DEC_BUF(in_ptr, uint8_t, reply->reply_addr);
+	}
+
+	TMCL_DEC_BUF(in_ptr, uint8_t, reply->mod_addr);
+	TMCL_DEC_BUF(in_ptr, uint8_t, reply->cmd_id);
+	TMCL_DEC_BUF(in_ptr, uint8_t, reply->type_id);
+	TMCL_DEC_BUF(in_ptr, uint8_t, reply->motor_id);
+	TMCL_DEC_BUF(in_ptr, uint32_t, reply->value);
+	reply->value = be32toh(reply->value);
+
+	if (ctx->flags & TMCL_HAS_CHKSUM) {
+		TMCL_DEC_BUF(in_ptr, uint8_t, reply->chksum);
+	}
+
+	return (in_ptr - buf);
+}
+
+
