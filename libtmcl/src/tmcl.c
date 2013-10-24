@@ -14,6 +14,7 @@
  * libtmcl. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -140,9 +141,8 @@ int tmcl_enc_cmd_reply(struct tmcl_ctx_t *ctx, char *buf, size_t size, struct tm
 	}
 
 	TMCL_ENC_BUF(out_ptr, uint8_t, reply->mod_addr);
+	TMCL_ENC_BUF(out_ptr, uint8_t, reply->status);
 	TMCL_ENC_BUF(out_ptr, uint8_t, reply->cmd_id);
-	TMCL_ENC_BUF(out_ptr, uint8_t, reply->type_id);
-	TMCL_ENC_BUF(out_ptr, uint8_t, reply->motor_id);
 	TMCL_ENC_BUF(out_ptr, uint32_t, htobe32(reply->value));
 
 	if (ctx->flags & TMCL_HAS_CHKSUM) {
@@ -165,9 +165,8 @@ int tmcl_dec_cmd_reply(struct tmcl_ctx_t *ctx, struct tmcl_cmd_reply_t *reply, c
 	}
 
 	TMCL_DEC_BUF(in_ptr, uint8_t, reply->mod_addr);
+	TMCL_DEC_BUF(in_ptr, uint8_t, reply->status);
 	TMCL_DEC_BUF(in_ptr, uint8_t, reply->cmd_id);
-	TMCL_DEC_BUF(in_ptr, uint8_t, reply->type_id);
-	TMCL_DEC_BUF(in_ptr, uint8_t, reply->motor_id);
 	TMCL_DEC_BUF(in_ptr, uint32_t, reply->value);
 	reply->value = be32toh(reply->value);
 
