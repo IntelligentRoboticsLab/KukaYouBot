@@ -30,8 +30,8 @@ protocol, as described by:
 The TMCL protocol specifies both the high-level Assembly language that is used
 to control the motors, and the communication protocol between the master and the
 slave devices. The TMCL protocol is (mostly) physical layer independent, i.e. it
-can be used over ethernet using the EtherCAT specification, over USB using the
-USB specification, or directly over RS232/RS485.
+can be used over ethernet using the EtherCAT specification, or directly over
+USB, RS232 or RS485.
 
 ## libskro
 
