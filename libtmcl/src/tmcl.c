@@ -32,6 +32,43 @@
 		(in_ptr) += sizeof(type); \
 	} while (0)
 
+int tmcl_init(struct tmcl_ctx_t *ctx, unsigned int flags) {
+	if (!ctx) {
+		return -1;
+	}
+
+	memset(ctx, 0, sizeof(struct tmcl_ctx_t));
+
+	/*
+	 * Compute the required sizes for the command and the command reply
+	 * buffers.
+	 */
+	ctx->req_cmd_size = 3 * sizeof(uint8_t) + sizeof(uint32_t);
+	ctx->req_reply_size = 3 * sizeof(uint8_t) + sizeof(uint32_t);
+
+	if (flags & TMCL_HAS_ADDR) {
+		ctx->flags |= TMCL_HAS_ADDR;
+		ctx->req_cmd_size += sizeof(uint8_t);
+		ctx->req_reply_size += sizeof(uint8_t);
+	}
+
+	if (flags & TMCL_HAS_CHKSUM) {
+		ctx->flags |= TMCL_HAS_CHKSUM;
+		ctx->req_cmd_size += sizeof(uint8_t);
+		ctx->req_reply_size += sizeof(uint8_t);
+	}
+
+	return 0;
+}
+
+void tmcl_quit(struct tmcl_ctx_t *ctx) {
+	if (!ctx) {
+		return;
+	}
+
+	memset(ctx, 0, sizeof(struct tmcl_ctx_t));
+}
+
 unsigned int tmcl_chksum(char *buf, size_t size) {
 	unsigned int res = 0;
 	size_t i;
@@ -43,7 +80,7 @@ unsigned int tmcl_chksum(char *buf, size_t size) {
 	return res;
 }
 
-int tmcl_enc_cmd(tmcl_ctx_t *ctx, char *buf, size_t size, tmcl_cmd_t *cmd) {
+int tmcl_enc_cmd(struct tmcl_ctx_t *ctx, char *buf, size_t size, struct tmcl_cmd_t *cmd) {
 	char *out_ptr = buf;
 
 	if (!ctx || !buf || !cmd || size < ctx->req_cmd_size) {
@@ -67,7 +104,7 @@ int tmcl_enc_cmd(tmcl_ctx_t *ctx, char *buf, size_t size, tmcl_cmd_t *cmd) {
 	return (out_ptr - buf);
 }
 
-int tmcl_dec_cmd(tmcl_ctx_t *ctx, tmcl_cmd_t *cmd, char *buf, size_t size) {
+int tmcl_dec_cmd(struct tmcl_ctx_t *ctx, struct tmcl_cmd_t *cmd, char *buf, size_t size) {
 	char *in_ptr = buf;
 
 	if (!ctx || !buf || !cmd || size < ctx->req_cmd_size) {
@@ -91,7 +128,7 @@ int tmcl_dec_cmd(tmcl_ctx_t *ctx, tmcl_cmd_t *cmd, char *buf, size_t size) {
 	return (in_ptr - buf);
 }
 
-int tmcl_enc_cmd_reply(tmcl_ctx_t *ctx, char *buf, size_t size, tmcl_cmd_reply_t *reply) {
+int tmcl_enc_cmd_reply(struct tmcl_ctx_t *ctx, char *buf, size_t size, struct tmcl_cmd_reply_t *reply) {
 	char *out_ptr = buf;
 
 	if (!ctx || !buf || !reply || size < ctx->req_reply_size) {
@@ -116,7 +153,7 @@ int tmcl_enc_cmd_reply(tmcl_ctx_t *ctx, char *buf, size_t size, tmcl_cmd_reply_t
 	return (out_ptr - buf);
 }
 
-int tmcl_dec_cmd_reply(tmcl_ctx_t *ctx, tmcl_cmd_reply_t *reply, char *buf, size_t size) {
+int tmcl_dec_cmd_reply(struct tmcl_ctx_t *ctx, struct tmcl_cmd_reply_t *reply, char *buf, size_t size) {
 	char *in_ptr = buf;
 
 	if (!ctx || !buf || !reply || size < ctx->req_reply_size) {
@@ -140,5 +177,4 @@ int tmcl_dec_cmd_reply(tmcl_ctx_t *ctx, tmcl_cmd_reply_t *reply, char *buf, size
 
 	return (in_ptr - buf);
 }
-
 
