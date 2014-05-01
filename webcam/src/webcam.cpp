@@ -76,8 +76,9 @@ public:
 
             frameID++;
         }
+
         cvReleaseCapture( &capture );
-        ROS_INFO( "Error with ROS (ros not ok)." );
+        ROS_INFO( "Error with ROS (ros not ok)" );
     }
 
     ~Webcam()
@@ -86,35 +87,45 @@ public:
         ROS_INFO( "Exiting webcam stream" );
     }
 
+
+    // Switch webcam if the rosparam has changed
     bool broadCast()
     {
+
+        // Get the rosparam
         int webcamIDParam;
         n_.getParam( webcamIDParamName, webcamIDParam );
+
+
         if( webcamID != webcamIDParam )
         {
 
             ROS_INFO( "Switching webcam" );
             webcamID = webcamIDParam;
 
+
+            // Release previous webcam stream
             cvReleaseCapture( &capture );
 
+
+            // Grab new webcam stream
             capture = cvCaptureFromCAM( webcamID );
 
+            // Check if the webcamstream is active
             if( !capture )
             {
                 ROS_ERROR( "Invalid webcamID" );
             }
         }
 
+
+        // Check if the webcam stream is still active
         if( capture )
         {
             return publishImage();
         }
-        else
-        {
-            return false;
-        }
 
+        return false;
     }
 
     // Grabs and publishes an image from the webcam stream
