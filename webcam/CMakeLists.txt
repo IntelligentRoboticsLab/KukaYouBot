@@ -99,7 +99,7 @@ include_directories(
 
 ## Declare a cpp library
 add_library(webcam
-  src/webcam.cpp
+   src/webcam.cpp
 )
 
 ## Declare a cpp executable

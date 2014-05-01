@@ -1,4 +1,4 @@
-/*******************************
+/**********************************************************
  *
  * Sébastien Negrijn
  * Uva@Work
@@ -10,14 +10,21 @@
  * Uses the webcam id as set in rosparam: webcam/webcamID
  * Defaults to -1 (any cam).
  *
- *******************************/
+ **********************************************************/
+
+#include <iostream>
+#include <fstream>
+#include <string.h>
 
 #include <ros/ros.h>
 #include <image_transport/image_transport.h>
 
+
 #include <cv_bridge/cv_bridge.h>
 #include <opencv2/opencv.hpp>
 #include <sensor_msgs/image_encodings.h>
+
+
 
 
 class Webcam
@@ -33,6 +40,8 @@ class Webcam
     IplImage* frame;
     cv::Mat image, imageCopy;
 
+    const char* webcamIDParamName;
+
 
 public:
     Webcam()
@@ -45,12 +54,11 @@ public:
         capture = 0;
         frameID = 0;
 
-        n_.param( "webcam/webcamID", webcamID, -1 );
+        webcamIDParamName = "webcam/webcamID";
 
+        n_.param( webcamIDParamName, webcamID, -1 );
 
         capture = cvCaptureFromCAM( webcamID );
-
-        cvNamedWindow( "result", CV_WINDOW_AUTOSIZE );
 
         if(!capture )
         {
@@ -64,16 +72,49 @@ public:
         while( ros::ok() )
         {
 
-            this->publishImage();
+            this->broadCast();
 
             frameID++;
         }
-        std::cout << "Error with ROS (ros not ok)." << std::endl;
+        cvReleaseCapture( &capture );
+        ROS_INFO( "Error with ROS (ros not ok)." );
     }
 
     ~Webcam()
     {
-        std::cout << "Exiting webcam stream" << std:: endl;
+        cvReleaseCapture( &capture );
+        ROS_INFO( "Exiting webcam stream" );
+    }
+
+    bool broadCast()
+    {
+        int webcamIDParam;
+        n_.getParam( webcamIDParamName, webcamIDParam );
+        if( webcamID != webcamIDParam )
+        {
+
+            ROS_INFO( "Switching webcam" );
+            webcamID = webcamIDParam;
+
+            cvReleaseCapture( &capture );
+
+            capture = cvCaptureFromCAM( webcamID );
+
+            if( !capture )
+            {
+                ROS_ERROR( "Invalid webcamID" );
+            }
+        }
+
+        if( capture )
+        {
+            return publishImage();
+        }
+        else
+        {
+            return false;
+        }
+
     }
 
     // Grabs and publishes an image from the webcam stream
@@ -82,6 +123,7 @@ public:
 
         // Grab a frame
         frame = cvQueryFrame( capture );
+
 
         // Convert to cv::Mat
         image = frame;
