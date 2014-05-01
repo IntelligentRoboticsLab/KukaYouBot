@@ -75,6 +75,8 @@ public:
             this->broadCast();
 
             frameID++;
+
+            ros::spinOnce();
         }
 
         cvReleaseCapture( &capture );
@@ -181,7 +183,5 @@ int main(int argc, char** argv)
     ros::init( argc, argv, "webcam" );
 
     Webcam webcam;
-
-    ros::spin();
 
 }
