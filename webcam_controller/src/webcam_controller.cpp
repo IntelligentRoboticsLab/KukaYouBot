@@ -8,8 +8,9 @@
  * to the rostopic "rgb/webcam"
  *
  * Uses the webcam id as set in rosparam: webcam/webcamID
- * Defaults to -1 (any cam).
- *
+ * Switch off:    -2
+ * Defaultwebcam: -1
+ * WebcamID:      0-99
  **********************************************************/
 
 #include <iostream>
@@ -27,7 +28,7 @@
 
 
 
-class Webcam
+class WebcamController
 {
     ros::NodeHandle n_;
     image_transport::ImageTransport it_;
@@ -44,7 +45,7 @@ class Webcam
 
 
 public:
-    Webcam()
+    WebcamController()
         : it_( n_ )
     {
 
@@ -56,19 +57,13 @@ public:
 
         webcamIDParamName = "webcam/webcamID";
 
-        n_.param( webcamIDParamName, webcamID, -1 );
 
-        capture = cvCaptureFromCAM( webcamID );
+        // Set value that is never met
+        webcamID = -3;
 
-        if(!capture )
-        {
-            ROS_ERROR( "Could not lock onto webcam" );
+        ROS_INFO( "Starting webcam controller" );
 
-        }
-
-
-        ROS_INFO( "Publishing webcam stream.." );
-        //std::cout << "Publishing webcam stream.." << std:: endl;
+        // Loop for new frames
         while( ros::ok() )
         {
 
@@ -83,7 +78,7 @@ public:
         ROS_INFO( "Error with ROS (ros not ok)" );
     }
 
-    ~Webcam()
+    ~WebcamController()
     {
         cvReleaseCapture( &capture );
         ROS_INFO( "Exiting webcam stream" );
@@ -102,21 +97,36 @@ public:
         if( webcamID != webcamIDParam )
         {
 
-            ROS_INFO( "Switching webcam" );
-            webcamID = webcamIDParam;
-
-
             // Release previous webcam stream
             cvReleaseCapture( &capture );
 
+            // Change current webcamID
+            webcamID = webcamIDParam;
 
-            // Grab new webcam stream
-            capture = cvCaptureFromCAM( webcamID );
+            if( webcamID == -2 ) {
+                ROS_INFO( "Switching off webcamstream" );
 
-            // Check if the webcamstream is active
-            if( !capture )
+                ROS_INFO( "Switched off webcamstream" );
+
+            }
+            else
             {
-                ROS_ERROR( "Invalid webcamID" );
+
+                ROS_INFO( "Switching webcamstream" );
+                webcamID = webcamIDParam;
+
+                // Grab new webcam stream
+                capture = cvCaptureFromCAM( webcamID );
+
+                // Check if the webcamstream is active
+                if( !capture )
+                {
+                    ROS_ERROR( "Invalid webcamID" );
+                }
+                else
+                {
+                    ROS_INFO( "Switched webcamstream" );
+                }
             }
         }
 
@@ -182,6 +192,6 @@ int main(int argc, char** argv)
 {
     ros::init( argc, argv, "webcam" );
 
-    Webcam webcam;
+    WebcamController theWebcamController;
 
 }
