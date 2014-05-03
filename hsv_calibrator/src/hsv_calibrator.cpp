@@ -84,6 +84,8 @@ public:
 
         cv::cvtColor( image, hsv_image, CV_BGR2HSV );
 
+
+
         cv::inRange( hsv_image, cv::Scalar( h_lower, s_lower, v_lower), cv::Scalar( h_upper, s_upper, v_upper ), thres_image );
 
 
