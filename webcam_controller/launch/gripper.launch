@@ -1,0 +1,6 @@
+<launch>
+	<param name="webcam/webcamID" type="int" value="0" />
+
+	<node name="webcam_controller" pkg="webcam_controller" type="webcam_controller_node" output="screen" />
+
+</launch>
