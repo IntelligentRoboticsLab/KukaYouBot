@@ -91,7 +91,7 @@ public:
 
         // Get the rosparam
         int webcamIDParam;
-        n_.getParam( webcamIDParamName, webcamIDParam );
+        n_.param( webcamIDParamName, webcamIDParam, -2 );
 
 
         if( webcamID != webcamIDParam )
@@ -190,7 +190,7 @@ public:
 
 int main(int argc, char** argv)
 {
-    ros::init( argc, argv, "webcam" );
+    ros::init( argc, argv, "webcam_controller" );
 
     WebcamController theWebcamController;
 
