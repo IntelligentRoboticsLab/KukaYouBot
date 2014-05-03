@@ -6,6 +6,9 @@ project(image_thresholder)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  cv_bridge
+  image_transport
+  sensor_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -96,21 +99,21 @@ include_directories(
 )
 
 ## Declare a cpp library
-# add_library(image_thresholder
-#   src/${PROJECT_NAME}/image_thresholder.cpp
-# )
+add_library(image_thresholder
+  src/image_thresholder.cpp
+)
 
 ## Declare a cpp executable
-# add_executable(image_thresholder_node src/image_thresholder_node.cpp)
+add_executable(image_thresholder_node src/image_thresholder.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-# add_dependencies(image_thresholder_node image_thresholder_generate_messages_cpp)
+add_dependencies(image_thresholder_node image_thresholder_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(image_thresholder_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(image_thresholder_node
+  ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##
