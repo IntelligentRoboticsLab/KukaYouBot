@@ -1,12 +1,12 @@
 <launch>
-	<param name="image_thresholder/h_lower" type="int" value="88" />
-	<param name="image_thresholder/h_upper" type="int" value="118" />
+	<param name="image_thresholder/h_lower" type="int" value="86" />
+	<param name="image_thresholder/h_upper" type="int" value="108" />
 
-	<param name="image_thresholder/s_lower" type="int" value="132" />
-	<param name="image_thresholder/s_upper" type="int" value="202" />
+	<param name="image_thresholder/s_lower" type="int" value="63" />
+	<param name="image_thresholder/s_upper" type="int" value="150" />
 
-	<param name="image_thresholder/v_lower" type="int" value="92" />
-	<param name="image_thresholder/v_upper" type="int" value="153" />
+	<param name="image_thresholder/v_lower" type="int" value="209" />
+	<param name="image_thresholder/v_upper" type="int" value="255" />
 
 	<param name="image_thresholder/gaussian" type="int" value="5" />
 	
