@@ -1,6 +1,6 @@
 <launch>
 	<include file="$(find webcam_controller)/launch/gripper.launch"/>
-	<include file="$(find image_thresholder)/launch/beer_can.launch" />
+	<include file="$(find image_thresholder)/launch/laptop_case.launch" />
 	<include file="$(find blob_detector)/launch/standard.launch" />
 
 	<node name="RVIZ" pkg="rviz" type="rviz" args=" -d $(find uva_at_work)/conf/rviz_standard.rviz" />
