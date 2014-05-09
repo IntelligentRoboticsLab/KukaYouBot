@@ -1,0 +1,5 @@
+<launch>
+	
+	<node name="datamatrix_detector" pkg="datamatrix_detector" type="datamatrix_detector_node" output="screen" />
+
+</launch>
