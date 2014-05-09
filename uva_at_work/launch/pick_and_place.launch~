@@ -1,7 +1,14 @@
 <launch>
 	<include file="$(find webcam_controller)/launch/gripper.launch"/>
-	<include file="$(find image_thresholder)/launch/laptop_case.launch" />
+	<include file="$(find image_thresholder)/launch/bolt.launch" />
 	<include file="$(find blob_detector)/launch/standard.launch" />
+	<include file="$(find image_controller)/launch/default.launch" />
+	<include file="$(find a_star_pathfinding)/launch/default.launch" />
+	<include file="$(find datamatrix_detector)/launch/standard.launch" />
+	<include file="$(find action_controller)/launch/default.launch" />
+	<include file="$(find task_manager)/launch/default.launch" />
+
+	<node name="gmapping" pkg="gmapping" type="slam_gmapping" />
 
 	<node name="RVIZ" pkg="rviz" type="rviz" args=" -d $(find uva_at_work)/conf/rviz_standard.rviz" />
 </launch>

@@ -28,7 +28,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: Webcam
 Visualization Manager:
   Class: ""
   Displays:
@@ -52,7 +52,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /rgb/webcam
+      Image Topic: /image/active
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -133,5 +133,5 @@ Window Geometry:
   Webcam:
     collapsed: false
   Width: 1200
-  X: 291
-  Y: 103
+  X: 376
+  Y: 114

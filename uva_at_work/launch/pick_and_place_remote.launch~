@@ -1,0 +1,6 @@
+<launch>
+	<include file="$(find uva_at_work)/launch/pick_and_place.launch" />
+
+	<include file="$(find youbot_driver_ros_interface)/launch/youbot_driver.launch" />
+
+</launch>
