@@ -1,0 +1,11 @@
+<launch>
+
+	<param name="ACTION_MOVE_ARM_TO_CENTER_X" type="bool" value="false" />
+	<param name="ACTION_MOVE_ARM_TO_CENTER_Y" type="bool" value="false" />
+	<param name="ACTION_GRIPPER_POSITION" type="bool" value="false" />
+	<param name="ACTION_MOVE_BASE" type="bool" value="false" />
+	<param name="ACTION_MOVE_ARM_DOWN" type="bool" value="false" />
+	
+	<node name="action_controller" pkg="action_controller" type="action_controller_node" output="screen" />
+
+</launch>
