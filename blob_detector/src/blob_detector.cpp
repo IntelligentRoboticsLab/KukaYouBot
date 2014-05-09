@@ -5,7 +5,7 @@
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
 
-// #include <std_msgs/Int16MultiArray.h>
+#include <std_msgs/Float32MultiArray.h>
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/objdetect/objdetect.hpp>
@@ -15,7 +15,7 @@ class Blob_Detector
     ros::NodeHandle n_;
     image_transport::ImageTransport it_;
     image_transport::Subscriber image_sub_;
-    ros::Subscriber vector_pub_;
+    ros::Publisher feature_pub_;
 
     cv::SimpleBlobDetector::Params params;
     cv::Ptr<cv::FeatureDetector> blob_detector;
@@ -33,7 +33,7 @@ public:
     {
         ROS_INFO( "Starting the Blob_Detector" );
         image_sub_ = it_.subscribe( "thresh/image", 1, &Blob_Detector::callBack, this );
-        //vector_pub_ = n_.advertise<std_msgs::Int16MultiArrayConstPtr>( "detector/coords", 1 );
+        feature_pub_ = n_.advertise<std_msgs::Float32MultiArray>( "/detector/coords", 1 );
 
         if( !paramsSet() )
         {
@@ -63,12 +63,18 @@ public:
         std::vector<cv::KeyPoint> keypoints;
         blob_detector->detect( cv_img->image, keypoints );
 
+        std_msgs::Float32MultiArray newMes;
+
         for( int i = 0; i < keypoints.size(); i++ )
         {
-            std::cout << keypoints.at(i).pt.x << " " << keypoints.at(i).pt.y << " ";
+
+            newMes.data.push_back( keypoints.at(i).pt.x );
+            newMes.data.push_back( keypoints.at(i).pt.y );
+
+            //std::cout << keypoints.at(i).pt.x << " " << keypoints.at(i).pt.y << " ";
         }
 
-        std::cout << std::endl;
+        feature_pub_.publish( newMes );
 
     }
 
