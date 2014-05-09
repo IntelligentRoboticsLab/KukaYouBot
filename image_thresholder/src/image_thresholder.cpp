@@ -34,7 +34,7 @@ public:
     {
         ROS_INFO("Starting image_thresholder" );
 
-        image_sub_ = it_.subscribe( "rgb/webcam", 1, &Image_Thresholder::callBack, this );
+        image_sub_ = it_.subscribe( "image/active", 1, &Image_Thresholder::callBack, this );
         image_pub_ = it_.advertise( "thresh/image", 1 );
 
         if( paramsSet() )
