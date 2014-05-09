@@ -1,0 +1,5 @@
+<launch>
+	
+	<node name="a_star_pathfinding" pkg="a_star_pathfinding" type="a_star_pathfinding_node" output="screen" />
+
+</launch>
