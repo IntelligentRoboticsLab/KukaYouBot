@@ -11,3 +11,9 @@
 *.lai
 *.la
 *.a
+
+# Backup and swap files
+*~
+*.swp
+*.swo
+*.bak

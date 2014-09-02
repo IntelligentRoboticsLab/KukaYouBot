@@ -1,5 +1,0 @@
-<launch>
-
-	<param name="image_controller/topic_name" value="rgb/webcam" type="string" />
-
-	<node name="image_controller" pkg="image_controller" type="image_controller_node" output="screen" />
