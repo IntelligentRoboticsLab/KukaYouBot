@@ -1,0 +1,1 @@
+/usr/bin/c++  -fPIC    -shared -Wl,-soname,libaudio_slave.so -o devel/lib/libaudio_slave.so CMakeFiles/audio_slave.dir/src/audio_slave_node.cpp.o 

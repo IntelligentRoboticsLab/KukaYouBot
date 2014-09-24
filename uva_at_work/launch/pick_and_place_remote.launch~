@@ -1,6 +1,14 @@
 <launch>
-	<include file="$(find uva_at_work)/launch/pick_and_place.launch" />
+	
+	<include file="$(find image_thresholder)/launch/red_tag.launch" />
+	<include file="$(find blob_detector)/launch/standard.launch" />
+	<include file="$(find image_controller)/launch/default.launch" />
+	
+	<include file="$(find datamatrix_detector)/launch/standard.launch" />
+	<include file="$(find action_controller)/launch/default.launch" />
+	
 
-	<include file="$(find youbot_driver_ros_interface)/launch/youbot_driver.launch" />
+	
 
+	<node name="RVIZ" pkg="rviz" type="rviz" args=" -d $(find uva_at_work)/conf/rviz_standard.rviz" />
 </launch>

@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: google_recognition
+Description: Description of google_recognition
+Version: 0.0.0
+Cflags: -I/usr/local/include
+Libs: -L/usr/local/lib -lgoogle_recognition
+Requires: roscpp rospy std_msgs

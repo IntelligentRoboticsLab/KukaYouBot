@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "audio_slave")
+set(audio_slave_MAINTAINER "youbot <youbot@todo.todo>")
+set(audio_slave_DEPRECATED "")
+set(audio_slave_VERSION "0.0.0")
+set(audio_slave_BUILD_DEPENDS "roscpp")
+set(audio_slave_RUN_DEPENDS "roscpp")
+set(audio_slave_BUILDTOOL_DEPENDS "catkin")

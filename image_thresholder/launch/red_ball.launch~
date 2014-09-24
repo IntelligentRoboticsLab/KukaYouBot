@@ -1,0 +1,14 @@
+<launch>
+	<param name="image_thresholder/h_lower" type="int" value="133" />
+	<param name="image_thresholder/h_upper" type="int" value="180" />
+
+	<param name="image_thresholder/s_lower" type="int" value="47" />
+	<param name="image_thresholder/s_upper" type="int" value="207" />
+
+	<param name="image_thresholder/v_lower" type="int" value="131" />
+	<param name="image_thresholder/v_upper" type="int" value="197" />
+
+	<param name="image_thresholder/gaussian" type="int" value="11" />
+	
+	<node name="image_thresholder" pkg="image_thresholder" type="image_thresholder_node" output="screen" />
+</launch>

@@ -33,7 +33,7 @@ public:
 
         ROS_INFO( "Starting HSV Calibrator.." );
 
-        const char* topic = "/rgb/webcam";
+        const char* topic = "/image/active";
 
 
         // HSV upper and lower bounds
@@ -94,14 +94,7 @@ public:
 
         cv::waitKey(10);
 
-        if( h_lower > h_upper )
-            h_lower = h_upper;
 
-        if( s_lower > s_upper )
-            s_lower = s_upper;
-
-        if( v_lower > v_upper )
-            v_lower = v_upper;
 
 
     }

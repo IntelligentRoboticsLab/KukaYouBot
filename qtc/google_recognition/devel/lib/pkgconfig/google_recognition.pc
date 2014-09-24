@@ -1,0 +1,8 @@
+prefix=/home/youbot/uva_at_work_catkin/src/qtc/google_recognition/devel
+
+Name: google_recognition
+Description: Description of google_recognition
+Version: 0.0.0
+Cflags: -I/home/youbot/uva_at_work_catkin/src/google_recognition/include
+Libs: -L/home/youbot/uva_at_work_catkin/src/qtc/google_recognition/devel/lib -lgoogle_recognition
+Requires: roscpp rospy std_msgs

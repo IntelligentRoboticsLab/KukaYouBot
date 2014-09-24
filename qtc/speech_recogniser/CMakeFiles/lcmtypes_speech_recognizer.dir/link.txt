@@ -1,0 +1,2 @@
+/usr/bin/ar cr lib/liblcmtypes_speech_recognizer.a  CMakeFiles/lcmtypes_speech_recognizer.dir/lcmtypes/c/lcmtypes/h2sl_xml_string_t.c.o
+/usr/bin/ranlib lib/liblcmtypes_speech_recognizer.a

@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "action_controller")
+set(action_controller_MAINTAINER "youbot <youbot@todo.todo>")
+set(action_controller_DEPRECATED "")
+set(action_controller_VERSION "0.0.0")
+set(action_controller_BUILD_DEPENDS "roscpp")
+set(action_controller_RUN_DEPENDS "roscpp")
+set(action_controller_BUILDTOOL_DEPENDS "catkin")

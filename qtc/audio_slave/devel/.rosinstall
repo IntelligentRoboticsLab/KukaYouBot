@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/youbot/uva_at_work_catkin/src/qtc/audio_slave/devel/setup.sh

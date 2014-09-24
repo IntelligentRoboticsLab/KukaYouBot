@@ -1,0 +1,7 @@
+
+class Joint {
+public:
+    Joint() {
+
+    }
+};

@@ -6,3 +6,5 @@
 	<param name="blob_detector/maxArea" type="int" value="5000" />
 
 	<node name="blob_detector" pkg="blob_detector" type="blob_detector_node" output="screen" />
+
+</launch>

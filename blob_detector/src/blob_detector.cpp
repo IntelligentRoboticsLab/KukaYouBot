@@ -71,8 +71,10 @@ public:
             newMes.data.push_back( keypoints.at(i).pt.x );
             newMes.data.push_back( keypoints.at(i).pt.y );
 
-            //std::cout << keypoints.at(i).pt.x << " " << keypoints.at(i).pt.y << " ";
+            std::cout << keypoints.at(i).pt.x << " " << keypoints.at(i).pt.y;
         }
+
+        std::cout << std::endl;
 
         feature_pub_.publish( newMes );
 

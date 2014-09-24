@@ -1,0 +1,8 @@
+prefix=/home/youbot/uva_at_work_catkin/src/qtc/audio_slave/devel
+
+Name: audio_slave
+Description: Description of audio_slave
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/youbot/uva_at_work_catkin/src/qtc/audio_slave/devel/lib 
+Requires: 

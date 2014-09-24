@@ -264,11 +264,14 @@ class ActionController
     bool ACTION_MOVE_BASE;
     bool ACTION_MOVE_BASE_LEFT;
     bool ACTION_MOVE_ARM_DOWN;
+    bool ACTION_OVERVIEW;
 
     int GOAL_X;
     int GOAL_Y;
 
-    bool initial;
+    bool initiated;
+
+
 
 public:
 
@@ -276,11 +279,6 @@ public:
 
     ActionController()
     {
-
-        initial = true;
-
-        GOAL_X = 320;
-        GOAL_Y = 320;
 
         ROS_INFO( "Starting ActionController.." );
         arm_subscriber_ = n_.subscribe( "/joint_states", 1,
@@ -296,15 +294,31 @@ public:
 
         base_publisher_ = n_.advertise<geometry_msgs::Twist>( "/cmd_vel",1 );
 
-        ROS_INFO( "Started ActionController" );
+        sleep( 1 );
 
-
-
+        ROS_INFO( "Started ActionController.." );
 
     }
 
     void initiate()
     {
+
+        ACTION_MOVE_ARM_TO_CENTER_X = false;
+        ACTION_MOVE_ARM_TO_CENTER_Y = false;
+        ACTION_GRIPPER_POSITION     = false;
+        ACTION_MOVE_BASE            = false;
+        ACTION_MOVE_BASE_LEFT       = false;
+        ACTION_MOVE_ARM_DOWN        = false;
+        ACTION_OVERVIEW             = false;
+
+        n_.setParam( "ACTION_MOVE_ARM_TO_CENTER_X", ACTION_MOVE_ARM_TO_CENTER_X );
+        n_.setParam( "ACTION_MOVE_ARM_TO_CENTER_Y", ACTION_MOVE_ARM_TO_CENTER_Y );
+        n_.setParam( "ACTION_MOVE_BASE",            ACTION_MOVE_BASE );
+        n_.setParam( "ACTION_MOVE_BASE_LEFT",       ACTION_MOVE_BASE_LEFT );
+        n_.setParam( "ACTION_MOVE_ARM_DOWN",        ACTION_MOVE_ARM_DOWN );
+        n_.setParam( "ACTION_OVERVIEW",             ACTION_MOVE_ARM_DOWN );
+
+        n_.setParam( "FEEDBACK_FEATURE", false );
 
 
         double poseGrasp[] = {3.04171,2.04427,-1.5189129,2.5434289757,2.8761944};
@@ -326,29 +340,31 @@ public:
 
         double gripperOpen[] = {0.0115, 0.0115 };
 
+        initiated = false;
+
 
         YouBotArm newArmPosition;
-        ros::spinOnce();
 
-        sleep( 1 );
-
-        newArmPosition.setJointPositions( poseOverview );
+        newArmPosition.setJointPositions( poseBack );
         arm_publisher_.publish( newArmPosition.toROSMsg() );
-        ros::spinOnce();
-        sleep( 5 );
+        sleep( 3 );
 
     }
 
     void initiateAction( const std_msgs::Float32MultiArray &msg )
     {
 
+
+
         if( msg.data.size() > 0 )
         {
             n_.setParam( "FEEDBACK_FEATURE", true );
+            //ROS_INFO( "FEATURE IN SIGHT" );
         }
         else
         {
             n_.setParam( "FEEDBACK_FEATURE", false );
+            ROS_INFO( "No features" );
         }
 
         updateParams();
@@ -367,12 +383,19 @@ public:
 
         if( ACTION_MOVE_ARM_TO_CENTER_X )
         {
+            //ROS_INFO( newYouBotArmPosition.getJointPosition(0) );
             moveArmToCenterX( msg, &newYouBotArmPosition );
+            //ROS_INFO( newYouBotArmPosition.getJointPosition(0) );
         }
 
         if( ACTION_MOVE_ARM_TO_CENTER_Y )
         {
             moveArmToCenterY( msg, &newYouBotArmPosition );
+        }
+
+        if( ACTION_OVERVIEW )
+        {
+            moveArmToOverview( msg, &newYouBotArmPosition );
         }
 
         if( ACTION_MOVE_ARM_DOWN )
@@ -394,21 +417,38 @@ public:
 
         moveGripper( msg, &newYouBotGripperPosition );
 
+        if( initiated )
+            arm_publisher_.publish( newYouBotArmPosition.toROSMsg() );
 
-        arm_publisher_.publish( newYouBotArmPosition.toROSMsg() );
         base_publisher_.publish( newYouBotBaseSpeed.toROSMsg());
         gripper_publisher_.publish( newYouBotGripperPosition.toROSMsg() );
-
 
     }
 
     bool moveArmDown( YouBotArm *newArmPosition )
     {
 
-        double joint0StepSize = 0.005;
+        double joint0StepSize = 0.02;
+        double joint2StepSize = 0.001;
+        //double newJoint2Position = currentYouBotArm.getJointPosition(2) + joint2StepSize;
         double newJoint1Position = currentYouBotArm.getJointPosition(1) + joint0StepSize;
 
+        if( currentYouBotArm.getJointPosition(1) > 2.25 )
+        {
+            n_.setParam( "ACTION_MOVE_ARM_DOWN", false );
+            n_.setParam( "FEEDBACK_ARM_IS_DOWN", true );
+        }
+
+        //newArmPosition->setJointPosition( 3, newJoint2Position );
         newArmPosition->setJointPosition( 1, newJoint1Position );
+
+    }
+
+    bool moveArmToOverview( const std_msgs::Float32MultiArray msg, YouBotArm *newArmPosition )
+    {
+        double poseOverview[] = {3.04171, 1.4, -1.1, 3.0, 2.9539};
+
+        newArmPosition->setJointPositions( poseOverview );
 
     }
 
@@ -419,12 +459,14 @@ public:
             return false;
         }
 
+        //std::cout << "Features: " << msg.data.size() << std::endl;
+
         int x = static_cast<int> ( msg.data[0] );
         int y = static_cast<int> ( msg.data[1] );
 
         //Correct x
         int maxRange = 0;
-        double joint0StepSize = 0.0001;
+        double joint0StepSize = 0.0003;
 
         int diffX = GOAL_X - x;
 
@@ -438,7 +480,7 @@ public:
         {
             std::cout << "left ";
 
-            newJoint0Pos = newJoint0Pos - (joint0StepSize * diffX);
+            newJoint0Pos = newJoint0Pos + (joint0StepSize * diffX);
             n_.setParam( "FEEDBACK_DIFF_X", false );
 
         }
@@ -446,7 +488,7 @@ public:
         {
             std::cout << "right ";
 
-            newJoint0Pos = newJoint0Pos - joint0StepSize * diffX;
+            newJoint0Pos = newJoint0Pos + joint0StepSize * diffX;
             n_.setParam( "FEEDBACK_DIFF_X", false );
 
         }
@@ -474,7 +516,7 @@ public:
 
         int maxRange = 0;
 
-        double joint3StepSize = 0.0004;
+        double joint3StepSize = 0.0007;
 
         int diffY = GOAL_Y - y;
 
@@ -484,14 +526,14 @@ public:
         {
             std::cout << "up ";
 
-            newJoint3Pos = newJoint3Pos - joint3StepSize * diffY;
+            newJoint3Pos = newJoint3Pos + joint3StepSize * diffY;
             n_.setParam( "FEEDBACK_DIFF_Y", false);
         }
         else if( diffY < -maxRange )
         {
             std::cout << "down " << std::endl;
 
-            newJoint3Pos = newJoint3Pos - joint3StepSize * diffY;
+            newJoint3Pos = newJoint3Pos + joint3StepSize * diffY;
             n_.setParam( "FEEDBACK_DIFF_Y", false);
         }
         else
@@ -516,16 +558,20 @@ public:
     bool moveBase( const std_msgs::Float32MultiArray &msg, YouBotBase *newBase )
     {
 
-        int baseGoalX = 320;
-        int baseGoalY = 425;
+        //std::cout << "Moving base" << std::endl;
 
-        int minLongSpeed = 0.03;
-        int maxLongSpeed = 0.1;
+        int baseGoalX = GOAL_X;
+        int baseGoalY = GOAL_Y;
 
-        int minRotSpeed = 0.02;
-        int maxRotSpeed = 0.2;
+        //std::cout << "Goal: " << baseGoalX << " " << baseGoalY << std::endl;
 
-        int maxRange = 15;
+        double minLongSpeed = 0.005;
+        double maxLongSpeed = 0.05;
+
+        double minRotSpeed = 0.000;
+        double maxRotSpeed = 0.1;
+
+        double maxRange = 5;
 
         double rotSpeed, longSpeed;
         rotSpeed = longSpeed = 0;
@@ -542,13 +588,18 @@ public:
 
         if( diffX > maxRange )
         {
-
+            n_.setParam( "FEEDBACK_DIFF_X", false );
             rotSpeed = ((double)(diffX-maxRange) / ( 2 * maxRange ) * maxRotSpeed) + minRotSpeed;
         }
-        if( diffX < -maxRange )
+        else if( diffX < -maxRange )
         {
-
+            n_.setParam( "FEEDBACK_DIFF_X", false );
             rotSpeed = ((double)(diffX+maxRange) / ( 2 * maxRange ) * maxRotSpeed) - minRotSpeed;
+        }
+        else
+        {
+            ROS_INFO( "feedback x" );
+            n_.setParam( "FEEDBACK_DIFF_X", true );
         }
         if( rotSpeed > maxRotSpeed )
             rotSpeed = maxRotSpeed;
@@ -561,13 +612,18 @@ public:
 
         if( diffY > maxRange )
         {
-
+            n_.setParam( "FEEDBACK_DIFF_Y", false );
             longSpeed = ((double)(diffY-maxRange) / ( 2 * maxRange ) * maxLongSpeed) + minLongSpeed;
         }
-        if( diffY < -maxRange )
+        else if( diffY < -maxRange )
         {
-
+            n_.setParam( "FEEDBACK_DIFF_Y", false );
             longSpeed = ((double)(diffY+maxRange) / ( 2 * maxRange ) * maxLongSpeed) - minLongSpeed;
+        }
+        else
+        {
+            ROS_INFO( "feedback y" );
+            n_.setParam( "FEEDBACK_DIFF_Y", true );
         }
         if( longSpeed > maxLongSpeed )
             longSpeed = maxLongSpeed;
@@ -575,6 +631,7 @@ public:
         if( longSpeed < -maxLongSpeed )
             longSpeed = -maxLongSpeed;
 
+        //std::cout << "Speeds: " << longSpeed << " " << rotSpeed << std::endl;
         newBase->setForwardSpeed( longSpeed );
         newBase->setRotateSpeed( rotSpeed );
 
@@ -617,7 +674,13 @@ public:
 
         if( msg.name[0] == "arm_joint_1" )
         {
+            if( !initiated )
+            {
+                ROS_INFO( "ARM INITIATED" );
+                initiated = true;
+            }
 
+            //ROS_INFO( "MODEL UPDATE" );
             currentYouBotArm.parseROSMsg( msg );
             currentYouBotGripper.parseROSMsg( msg );
 
@@ -638,6 +701,11 @@ public:
         n_.param( "ACTION_GRIPPER_POSITION", ACTION_GRIPPER_POSITION, false );
         n_.param( "ACTION_MOVE_BASE", ACTION_MOVE_BASE, false );
         n_.param( "ACTION_MOVE_BASE_LEFT", ACTION_MOVE_BASE_LEFT, false );
+        n_.param( "ACTION_OVERVIEW", ACTION_OVERVIEW, false );
+
+        n_.getParam( "GOAL_X", GOAL_X );
+
+        n_.getParam( "GOAL_Y", GOAL_Y );
 
     }
 
@@ -649,10 +717,9 @@ int main( int argc, char** argv )
 
     ActionController theActionController;
 
-    ros::spinOnce();
+
 
     theActionController.initiate();
-
 
     ros::spin();
 

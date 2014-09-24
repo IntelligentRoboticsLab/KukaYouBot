@@ -1,0 +1,7 @@
+
+class Link {
+public:
+    Link() {
+
+    }
+};

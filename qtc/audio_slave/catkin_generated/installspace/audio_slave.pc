@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: audio_slave
+Description: Description of audio_slave
+Version: 0.0.0
+Cflags: 
+Libs: -L/usr/local/lib 
+Requires: 

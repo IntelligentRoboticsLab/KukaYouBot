@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "speech_recognizer")
+set(speech_recognizer_MAINTAINER "youbot <youbot@todo.todo>")
+set(speech_recognizer_DEPRECATED "")
+set(speech_recognizer_VERSION "0.0.0")
+set(speech_recognizer_BUILD_DEPENDS "roscpp" "rospy" "std_msgs" "google_recognition")
+set(speech_recognizer_RUN_DEPENDS "roscpp" "rospy" "std_msgs" "google_recognition")
+set(speech_recognizer_BUILDTOOL_DEPENDS "catkin")

@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "google_recognition")
+set(google_recognition_MAINTAINER "youbot <youbot@todo.todo>")
+set(google_recognition_DEPRECATED "")
+set(google_recognition_VERSION "0.0.0")
+set(google_recognition_BUILD_DEPENDS "roscpp" "rospy" "std_msgs")
+set(google_recognition_RUN_DEPENDS "roscpp" "rospy" "std_msgs")
+set(google_recognition_BUILDTOOL_DEPENDS "catkin")

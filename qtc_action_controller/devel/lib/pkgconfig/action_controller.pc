@@ -1,0 +1,8 @@
+prefix=/home/youbot/uva_at_work_catkin/src/qtc_action_controller/devel
+
+Name: action_controller
+Description: Description of action_controller
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/youbot/uva_at_work_catkin/src/qtc_action_controller/devel/lib 
+Requires: 

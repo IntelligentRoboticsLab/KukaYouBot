@@ -1,0 +1,46 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/youbot/uva_at_work_catkin/src/speech_recognizer/lcmtypes/c/lcmtypes/h2sl_xml_string_t.c
+string.h
+-
+lcmtypes/h2sl_xml_string_t.h
+/home/youbot/uva_at_work_catkin/src/speech_recognizer/lcmtypes/c/lcmtypes/lcmtypes/h2sl_xml_string_t.h
+
+/home/youbot/uva_at_work_catkin/src/speech_recognizer/lcmtypes/c/lcmtypes/h2sl_xml_string_t.h
+stdint.h
+-
+stdlib.h
+-
+lcm/lcm_coretypes.h
+-
+lcm/lcm.h
+-
+
+/usr/local/include/lcm/eventlog.h
+stdio.h
+-
+stdint.h
+-
+
+/usr/local/include/lcm/lcm.h
+stdint.h
+-
+eventlog.h
+/usr/local/include/lcm/eventlog.h
+
+/usr/local/include/lcm/lcm_coretypes.h
+stdio.h
+-
+stdint.h
+-
+string.h
+-
+stdlib.h
+-
+
